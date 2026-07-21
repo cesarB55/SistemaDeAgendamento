@@ -1,28 +1,34 @@
 package servico;
 
 import modelo.Compromisso;
-//import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Gerencia o conjunto de compromissos mantendo-os ordenados por data/hora,
+ * permitindo adição, remoção, pesquisas personalizadas e geração de relatórios.
+ */
 public class Agenda {
-    private List<Compromisso> compromissos;
 
+    // Conjunto que armazena compromissos ordenados cronologicamente sem duplicidade
+    private Set<Compromisso> compromissos;
+
+    /**
+     * Construtor da agenda (inicializa a estrutura TreeSet vazia).
+     */
     public Agenda() {
-        this.compromissos = new ArrayList<>();
+        this.compromissos = new TreeSet<>();
     }
 
+    /**
+     * Adiciona um novo compromisso à agenda.
+     * O TreeSet impede automaticamente cadastros no mesmo horário
+     * (baseado no compareTo da classe Compromisso).
+     */
     public boolean adicionar(Compromisso novo) {
-        for (Compromisso c : compromissos) {
-            if (c.getDataHora().equals(novo.getDataHora())) {
-                return false;
-            }
-        }
-        compromissos.add(novo);
-        Collections.sort(compromissos);
-        return true;
+        if (novo == null) return false;
+        return compromissos.add(novo);
     }
 
     public boolean remover(int id) {
@@ -38,7 +44,6 @@ public class Agenda {
                 .filter(c -> c.getDataHora().getDayOfMonth() == dia &&
                         c.getDataHora().getMonthValue() == mes &&
                         c.getDataHora().getYear() == ano)
-                .sorted()
                 .collect(Collectors.toList());
     }
 
@@ -46,35 +51,37 @@ public class Agenda {
         return compromissos.stream()
                 .filter(c -> c.getDataHora().getMonthValue() == mes &&
                         c.getDataHora().getYear() == ano)
-                .sorted()
                 .collect(Collectors.toList());
     }
 
     public List<Compromisso> filtrarPorAno(int ano) {
         return compromissos.stream()
                 .filter(c -> c.getDataHora().getYear() == ano)
-                .sorted()
                 .collect(Collectors.toList());
     }
 
     public List<Compromisso> filtrarPorPessoa(String pessoa) {
+        if (pessoa == null || pessoa.isBlank()) return Collections.emptyList();
+
         return compromissos.stream()
-                .filter(c -> c.getPessoa().equalsIgnoreCase(pessoa))
-                .sorted()
+                .filter(c -> c.getPessoa() != null && c.getPessoa().equalsIgnoreCase(pessoa.trim()))
                 .collect(Collectors.toList());
     }
 
     public List<Compromisso> filtrarPorAssunto(String assunto) {
+        if (assunto == null || assunto.isBlank()) return Collections.emptyList();
+
         return compromissos.stream()
-                .filter(c -> c.getAssunto().toLowerCase().contains(assunto.toLowerCase()))
-                .sorted()
+                .filter(c -> c.getAssunto() != null &&
+                        c.getAssunto().toLowerCase().contains(assunto.trim().toLowerCase()))
                 .collect(Collectors.toList());
     }
 
     public String gerarRelatorio(List<Compromisso> lista, String titulo) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n========== RELATÓRIO: ").append(titulo).append(" ==========\n");
-        if (lista.isEmpty()) {
+
+        if (lista == null || lista.isEmpty()) {
             sb.append("Nenhum compromisso encontrado.\n");
         } else {
             for (Compromisso c : lista) {
