@@ -31,14 +31,17 @@ public class Agenda {
         return compromissos.add(novo);
     }
 
+    // Remove um compromisso da agenda.
     public boolean remover(int id) {
         return compromissos.removeIf(c -> c.getId() == id);
     }
 
+    // Lista todos os compromissos
     public List<Compromisso> listarTodos() {
         return new ArrayList<>(compromissos);
     }
 
+    //============================ Filtros ===========================================
     public List<Compromisso> filtrarPorDia(int dia, int mes, int ano) {
         return compromissos.stream()
                 .filter(c -> c.getDataHora().getDayOfMonth() == dia &&
@@ -77,6 +80,7 @@ public class Agenda {
                 .collect(Collectors.toList());
     }
 
+    //========================== Função que gera relatórios =================================
     public String gerarRelatorio(List<Compromisso> lista, String titulo) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n========== RELATÓRIO: ").append(titulo).append(" ==========\n");

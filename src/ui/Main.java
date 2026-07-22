@@ -14,12 +14,15 @@ import java.util.List;
 
 
     public class Main extends JFrame {
+
+        //
         private Agenda agenda = new Agenda();
         private DefaultTableModel tableModel;
         private JTable table;
         private JTextField txtDataHora, txtPessoa, txtAssunto, txtDescricao;
         private JTextField txtFiltro;
 
+        // Declaração do "formatador"
         private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         public Main() {

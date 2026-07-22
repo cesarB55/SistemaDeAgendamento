@@ -59,7 +59,7 @@ public class Compromisso implements Comparable<Compromisso>{
         return String.format("ID: %d | %s | %s | Pessoa: %s | Assunto: %s | Descrição: %s",
                 id, getDataHoraFormatada(), getDiaDaSemana(), pessoa, assunto, descricao);
     }
-
+    // Sobrescrita do metodo de comparação
     @Override
     public int compareTo(Compromisso outro) {
         return this.dataHora.compareTo(outro.dataHora);
