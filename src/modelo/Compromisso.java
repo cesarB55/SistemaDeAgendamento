@@ -3,65 +3,89 @@ package modelo;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+public abstract class Compromisso implements Comparable<Compromisso> {
 
-/**
- * Representa um compromisso individual na agenda.
- * Implementa Comparable para permitir ordenação cronológica padrão.
- */
-
-public class Compromisso implements Comparable<Compromisso>{
-
-    // Atributos do compromisso
     private static int contadorId = 1;
-    private int id;
-    private LocalDateTime dataHora;
-    private String pessoa;
-    private String assunto;
-    private String descricao;
 
-    // Construtor do compromisso
-    public Compromisso(LocalDateTime dataHora, String pessoa, String assunto, String descricao) {
+    protected int id;
+    protected LocalDateTime dataHora;
+    protected String titulo;
+
+    public Compromisso(LocalDateTime dataHora, String titulo) {
         this.id = contadorId++;
         this.dataHora = dataHora;
-        this.pessoa = pessoa;
-        this.assunto = assunto;
-        this.descricao = descricao;
+        this.titulo = titulo;
     }
 
-    // Metodos Get Padrão
-    public int getId() { return id; }
-    public LocalDateTime getDataHora() { return dataHora; }
-    public String getPessoa() { return pessoa; }
-    public String getAssunto() { return assunto; }
-    public String getDescricao() { return descricao; }
+    public int getId() {
+        return id;
+    }
 
-    // Get dia da semana utilizando o switch
+    public LocalDateTime getDataHora() {
+        return dataHora;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
     public String getDiaDaSemana() {
+
         switch (dataHora.getDayOfWeek()) {
-            case MONDAY:    return "Segunda-feira";
-            case TUESDAY:   return "Terça-feira";
-            case WEDNESDAY: return "Quarta-feira";
-            case THURSDAY:  return "Quinta-feira";
-            case FRIDAY:    return "Sexta-feira";
-            case SATURDAY:  return "Sábado";
-            default:        return "Domingo";
+
+            case MONDAY:
+                return "Segunda-feira";
+
+            case TUESDAY:
+                return "Terça-feira";
+
+            case WEDNESDAY:
+                return "Quarta-feira";
+
+            case THURSDAY:
+                return "Quinta-feira";
+
+            case FRIDAY:
+                return "Sexta-feira";
+
+            case SATURDAY:
+                return "Sábado";
+
+            default:
+                return "Domingo";
         }
     }
 
-    // Get da Hora para visualização mais próxima do usurário
     public String getDataHoraFormatada() {
         return dataHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
     }
 
-    // Sobrescrita do metodo toString padrão
+    /**
+     * Cada filho informa seu próprio tipo.
+     */
+    public abstract String getTipo();
+
+    /**
+     * Cada filho monta sua descrição.
+     */
+    protected abstract String detalhes();
+
     @Override
     public String toString() {
-        return String.format("ID: %d | %s | %s | Pessoa: %s | Assunto: %s | Descrição: %s",
-                id, getDataHoraFormatada(), getDiaDaSemana(), pessoa, assunto, descricao);
+
+        return String.format(
+                "[%s] ID:%d | %s | %s | %s",
+                getTipo(),
+                id,
+                getDataHoraFormatada(),
+                titulo,
+                detalhes()
+        );
     }
-    // Sobrescrita do metodo de comparação
+
     @Override
     public int compareTo(Compromisso outro) {
         return this.dataHora.compareTo(outro.dataHora);
     }
+
 }
